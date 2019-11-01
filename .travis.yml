@@ -6,6 +6,11 @@ cache:
     - $HOME/.cache/pip
     - $HOME/.ccache  # https://github.com/travis-ci/travis-ci/issues/5853
 
+env:
+  global:
+    # Doctr deploy key for vstadnytskyi/persistent-property
+    - secure: "IP8Zt/CWGpyYtwvXfbzRYoDV8pgTVtWOyL+BlUxYVreAxSD27wrE0dkOgwgw68Qd1vna6PNcud/NkCoT3vs8UK7n6LkNPYAdOY7T36/hoCtc2L0vtFrp9LX9UnO6ZqtlCt1sOM+PpKKIx67s6YgvQQ9D4td/QJQA/8EdaaDpuE4dkxGrZh5c9/cMd6wzP1PorvMZHVRnnzRqbVVMdyl2ZYQed9HY1A+V8lHel96CvSFqnEugQPb9ij/U1t27ef+vCq/2bdNiPGPwUBr1IsYRpGaFWCCwxTZRiUia8ChzmpccG9K3RgSt3Hs971nrWsSQIWxBjCvCM5HccodBd8fRYAE1ZLuvBC+VMcR2LMuBMj5OnnSgxlOCNtvjnW3VPnHg29pUa3HY6Xs3YPjpwQpP0TT6eORSuwHI5iMAcXREvU3cBu6TkfaaAIM2sPyTPxNjGygOZva73vBblxCPWyq7PKU+gUlH6p9dHr1zZgCS2BFCzAK3CipS5eAcjf58WIvbq8UqEAR1sDGp/SuruL6vAss/N24cR9AX8nsNJBrZ95m/6L/uGRX6wpseTmJpuE1mroUiUN5n/rzyPu+Z7RNmzJw26CiTFfcEmTJDhjljBCDJ8Mv8kpdDe6kklNHtquP6Ho1MVHo2DowDv0VmS9IQ87cEnbnzGp1GpT7A2yN+QNY="
+
 install:
   # Install this package and the packages listed in requirements.txt.
   - pip install .
@@ -16,5 +21,8 @@ script:
   - coverage run -m pytest  # Run the tests and check for test coverage.
   - coverage report -m  # Generate test coverage report.
   - codecov  # Upload the report to codecov.
-  - flake8  # Enforce code style ('relaxed' line length limit is set in .flake8 config file).
+#  - flake8  # Enforce code style ('relaxed' line length limit is set in .flake8 config file).
+  - set -e  # If any of the following steps fail, just stop at that point.
   - make -C docs html  # Build the documentation.
+  - pip install doctr
+  - doctr deploy --built-docs docs/build/html .  # Publish the documentation.
